@@ -1,0 +1,13 @@
+[build]
+  command = "npm --prefix frontend run build"
+  publish = "frontend/dist"
+
+[context.production.environment]
+  # Set these in Netlify UI (or replace here, not recommended)
+  VITE_API_URL = "https://your-backend.onrender.com"
+  VITE_GOOGLE_MAPS_API_KEY = "your_google_maps_api_key"
+
+[[[redirects]]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

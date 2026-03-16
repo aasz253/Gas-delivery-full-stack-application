@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { Link } from 'react-router-dom';
 import { MapPin, ShoppingBag, Star, ShieldCheck, Clock, Zap, ArrowRight, ChevronRight, PhoneCall } from 'lucide-react';
 
@@ -11,7 +11,7 @@ const Home = () => {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/shops');
+        const res = await api.get('/api/shops');
         setShops(res.data);
       } catch (error) {
         console.error('Error fetching shops:', error);

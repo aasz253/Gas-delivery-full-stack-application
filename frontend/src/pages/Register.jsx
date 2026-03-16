@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { User, Mail, Phone, Lock, UserPlus, Loader2, Store, UserCircle, ShieldCheck } from 'lucide-react';
@@ -23,7 +23,7 @@ const Register = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:3000/api/users', formData);
+      const res = await api.post('/api/users', formData);
       login(res.data);
       navigate(formData.role === 'distributor' ? '/dashboard' : '/');
     } catch (err) {

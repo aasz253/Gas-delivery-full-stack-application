@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Store, Plus, Package, MapPin, CheckCircle, Clock, Loader2, BarChart3, Settings, ExternalLink, Phone, Info, LayoutDashboard, ShoppingCart, TrendingUp, Users, ArrowUpRight } from 'lucide-react';
 
@@ -29,9 +29,9 @@ const DistributorDashboard = () => {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
         const [shopRes, orderRes, cylRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/shops/my-shop', config),
-          axios.get('http://localhost:3000/api/orders/my-shop', config),
-          axios.get('http://localhost:3000/api/shops/cylinders', config),
+          api.get('/api/shops/my-shop', config),
+          api.get('/api/orders/my-shop', config),
+          api.get('/api/shops/cylinders', config),
         ]);
         
         // Check for new orders
@@ -90,7 +90,7 @@ const DistributorDashboard = () => {
       formData.append('image', file); // Backend uses 'image' field for uploads
 
       try {
-        const res = await axios.post('http://localhost:3000/api/upload', formData, {
+        const res = await api.post('/api/upload', formData, {
           headers: { 
             Authorization: `Bearer ${user.token}`,
             'Content-Type': 'multipart/form-data'
@@ -114,7 +114,7 @@ const DistributorDashboard = () => {
   const handleUpdateShop = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put('http://localhost:3000/api/shops/my-shop', shopForm, {
+      const res = await api.put('/api/shops/my-shop', shopForm, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setShop(res.data);
@@ -130,7 +130,7 @@ const DistributorDashboard = () => {
   const handleCreateShop = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:3000/api/shops', shopForm, {
+      const res = await api.post('/api/shops', shopForm, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setShop(res.data);
@@ -142,7 +142,7 @@ const DistributorDashboard = () => {
   const handleAddCylinder = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:3000/api/shops/cylinders', newCylinder, {
+      const res = await api.post('/api/shops/cylinders', newCylinder, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setCylinders([...cylinders, res.data]);
@@ -154,7 +154,7 @@ const DistributorDashboard = () => {
 
   const updateStatus = async (orderId, status) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${orderId}/status`, { status }, {
+      await api.put(`/api/orders/${orderId}/status`, { status }, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setOrders(orders.map(o => o._id === orderId ? { ...o, orderStatus: status } : o));

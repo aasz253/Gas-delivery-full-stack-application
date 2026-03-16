@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../context/AuthContext';
@@ -42,8 +42,8 @@ const ShopDetails = () => {
       try {
         console.log('Fetching shop details for ID:', id);
         const [shopRes, cylRes] = await Promise.all([
-          axios.get(`http://localhost:3000/api/shops/${id}`, { timeout: 10000 }),
-          axios.get(`http://localhost:3000/api/shops/${id}/cylinders`, { timeout: 10000 }),
+          api.get(`/api/shops/${id}`, { timeout: 10000 }),
+          api.get(`/api/shops/${id}/cylinders`, { timeout: 10000 }),
         ]);
         
         console.log('Shop response:', shopRes.data);
@@ -90,7 +90,7 @@ const ShopDetails = () => {
     formData.append('image', file);
 
     try {
-      const res = await axios.post('http://localhost:3000/api/upload', formData, {
+      const res = await api.post('/api/upload', formData, {
         headers: { 
           Authorization: `Bearer ${user?.token}`,
           'Content-Type': 'multipart/form-data'
@@ -127,7 +127,7 @@ const ShopDetails = () => {
         phoneNumber,
       };
 
-      await axios.post('http://localhost:3000/api/orders', orderData, {
+      await api.post('/api/orders', orderData, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       navigate('/order-success');

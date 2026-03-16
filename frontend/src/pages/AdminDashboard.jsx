@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { 
   Users, Store, ShoppingBag, TrendingUp, 
@@ -24,11 +24,11 @@ const AdminDashboard = () => {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
         const [statsRes, usersRes, shopsRes, ordersRes, postsRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/admin/stats', config),
-          axios.get('http://localhost:3000/api/admin/users', config),
-          axios.get('http://localhost:3000/api/admin/shops', config),
-          axios.get('http://localhost:3000/api/admin/orders', config),
-          axios.get('http://localhost:3000/api/admin/posts', config)
+          api.get('/api/admin/stats', config),
+          api.get('/api/admin/users', config),
+          api.get('/api/admin/shops', config),
+          api.get('/api/admin/orders', config),
+          api.get('/api/admin/posts', config)
         ]);
         
         setStats(statsRes.data);

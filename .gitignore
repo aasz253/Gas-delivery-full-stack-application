@@ -1,3 +1,25 @@
+# Node
+node_modules/
+
+# Frontend build
+frontend/dist/
+
+# Env files
+.env
+backend/.env
+frontend/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+
+# system
+*.DS_Store
+thumbs.db
 "node_modules/" 
 "frontend/node_modules/" 
 ".env" 

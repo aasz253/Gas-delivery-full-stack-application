@@ -3,13 +3,23 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const options = {
-  apiKey: process.env.AFRICASTALKING_API_KEY,
-  username: process.env.AFRICASTALKING_USERNAME,
-};
+const AT_API_KEY = process.env.AFRICASTALKING_API_KEY;
+const AT_USERNAME = process.env.AFRICASTALKING_USERNAME;
 
-const at = africastalking(options);
-const sms = at.SMS;
+let sms;
+if (AT_API_KEY && AT_USERNAME) {
+  try {
+    const at = africastalking({ apiKey: AT_API_KEY, username: AT_USERNAME });
+    sms = at.SMS;
+  } catch (err) {
+    console.warn("Africa's Talking initialization failed:", err?.message || err);
+    // Fallback to a mock SMS sender to avoid crashing the app
+    sms = { send: async (opts) => ({ status: 'mock', to: opts.to, message: opts.message }) };
+  }
+} else {
+  console.warn('AFRICASTALKING_API_KEY or AFRICASTALKING_USERNAME not set — using mock SMS sender');
+  sms = { send: async (opts) => ({ status: 'mock', to: opts.to, message: opts.message }) };
+}
 
 const sendSMS = async (to, message) => {
   try {

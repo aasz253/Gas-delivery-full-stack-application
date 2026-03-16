@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: gas-backend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      # Set these in Render dashboard or replace values below with secrets
+      - key: MONGO_URI
+        value: "REPLACE_WITH_MONGO_URI"
+      - key: JWT_SECRET
+        value: "REPLACE_WITH_JWT_SECRET"
+      - key: CLOUDINARY_CLOUD_NAME
+        value: "REPLACE_WITH_CLOUD_NAME"
+      - key: CLOUDINARY_API_KEY
+        value: "REPLACE_WITH_CLOUDINARY_API_KEY"
+      - key: CLOUDINARY_API_SECRET
+        value: "REPLACE_WITH_CLOUDINARY_API_SECRET"
+      - key: MPESA_CONSUMER_KEY
+        value: "REPLACE_WITH_MPESA_CONSUMER_KEY"
+      - key: MPESA_CONSUMER_SECRET
+        value: "REPLACE_WITH_MPESA_CONSUMER_SECRET"
+      - key: MPESA_SHORTCODE
+        value: "REPLACE_WITH_MPESA_SHORTCODE"
+      - key: MPESA_PASSKEY
+        value: "REPLACE_WITH_MPESA_PASSKEY"
+      - key: MPESA_CALLBACK_URL
+        value: "REPLACE_WITH_MPESA_CALLBACK_URL"
