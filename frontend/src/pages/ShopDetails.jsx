@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../context/AuthContext';
 import { MapPin, ShoppingCart, Camera, Send, Loader2, Map as MapIcon, ChevronRight, Info, CheckCircle2, AlertCircle, MessageCircle, Phone as PhoneIcon, ArrowLeft, ShoppingBag } from 'lucide-react';
 
 const containerStyle = { width: '100%', height: '450px' };
+
+const LocationMarker = ({ location, setLocation }) => {
+  useMapEvents({
+    click(e) {
+      setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
+    },
+  });
+
+  return <Marker position={[location.lat, location.lng]} />;
+};
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -14,7 +25,8 @@ const ShopDetails = () => {
   const [shop, setShop] = useState(null);
   const [cylinders, setCylinders] = useState([]);
   const [selectedCylinder, setSelectedCylinder] = useState(null);
-  const [location, setLocation] = useState({ lat: -1.286389, lng: 36.817223 });
+  // Default to Kakamega, Kenya if geolocation is not available
+  const [location, setLocation] = useState({ lat: 0.2827, lng: 34.7523 });
   const [area, setArea] = useState('');
   const [house, setHouse] = useState('');
   const [apartment, setApartment] = useState('');
@@ -24,11 +36,6 @@ const ShopDetails = () => {
   const [orderLoading, setOrderLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(user?.phone || '');
   const [uploading, setUploading] = useState(false);
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,8 +77,8 @@ const ShopDetails = () => {
     }
   }, [id]);
 
-  const onMapClick = useCallback((e) => {
-    setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+  const onMapClick = useCallback((latlng) => {
+    setLocation({ lat: latlng.lat, lng: latlng.lng });
   }, []);
 
   const handleImageUpload = async (e) => {
@@ -287,29 +294,20 @@ const ShopDetails = () => {
                       <Info size={14} /> Tap to adjust
                     </div>
                   </div>
-                  {isLoaded ? (
-                    <div className="rounded-[3rem] overflow-hidden border-4 border-gray-50 shadow-inner group">
-                      <GoogleMap 
-                        mapContainerStyle={containerStyle} 
-                        center={location} 
-                        zoom={16} 
-                        onClick={onMapClick}
-                        options={{
-                          styles: [
-                            {
-                              featureType: "all",
-                              elementType: "geometry.fill",
-                              stylers: [{ weight: "2.00" }]
-                            }
-                          ],
-                          disableDefaultUI: true,
-                          zoomControl: true,
-                        }}
-                      >
-                        <Marker position={location} />
-                      </GoogleMap>
-                    </div>
-                  ) : <div className="h-[450px] bg-gray-50 animate-pulse rounded-[3rem] flex items-center justify-center text-gray-400 font-bold">Loading Map Engine...</div>}
+                  <div className="rounded-[3rem] overflow-hidden border-4 border-gray-50 shadow-inner group">
+                    <MapContainer
+                      center={[location.lat, location.lng]}
+                      zoom={16}
+                      style={containerStyle}
+                      className="h-[450px] w-full"
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; OpenStreetMap contributors"
+                      />
+                      <LocationMarker location={location} setLocation={setLocation} />
+                    </MapContainer>
+                  </div>
                 </div>
 
                 {/* Details Section */}

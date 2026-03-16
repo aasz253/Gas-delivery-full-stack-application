@@ -18,7 +18,7 @@ const HowItWorks = () => {
     },
     {
       title: "Pin Your Location",
-      description: "Use our precise Google Maps integration to show exactly where you want your gas delivered.",
+      description: "Use our precise map integration to show exactly where you want your gas delivered.",
       icon: MapPin,
       color: "indigo"
     },
